@@ -35,7 +35,7 @@ struct Particle
 // function declarations
 
 /* */
-void initializeFluidParticles(Particle* particles, int numberOfFluidParticles);
+void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, Vector2f offset);
 /* */
 void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles, int numberOfParticles);
 /* */

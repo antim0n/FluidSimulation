@@ -62,7 +62,7 @@ int main()
         cout << "font not loaded";
     }
     text.setFont(font);
-    text.setString("SHORTCUTS   >>   stop: X | color: C | shader: S");
+    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | color: C | shader: S");
     text.setCharacterSize(15);
     text.setFillColor(Color::Green);
 
@@ -76,7 +76,7 @@ int main()
     }
 
     /* initialize all fluid particles */
-    initializeFluidParticles(particles, NUMBER_OF_FLUID_PARTICLES);
+    initializeFluidParticles(particles, NUMBER_OF_FLUID_PARTICLES, Vector2f(4, 5));
 
     /* initialize all boundary particles */
     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES);
@@ -97,11 +97,11 @@ int main()
         {
             switch (event.type)
             {
-            case sf::Event::Closed:
+            case Event::Closed:
                 window.close();
                 break;
 
-            case sf::Event::KeyPressed:
+            case Event::KeyPressed:
                 if (event.key.scancode == sf::Keyboard::Scan::C)
                 {
                     useColor = !useColor;
@@ -113,6 +113,14 @@ int main()
                 else if (event.key.scancode == sf::Keyboard::Scan::X)
                 {
                     stopSimulation = !stopSimulation;
+                }
+                break;
+
+            case Event::MouseButtonPressed:
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    Vector2i mousePos = Mouse::getPosition(window);
+                    initializeFluidParticles(particles, NUMBER_OF_FLUID_PARTICLES, Vector2f((float)mousePos.x / WINDOW_WIDTH * 2 / H, ((float)WINDOW_HEIGHT - (float)mousePos.y) / WINDOW_WIDTH * 2 / H));
                 }
                 break;
 

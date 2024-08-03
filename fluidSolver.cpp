@@ -1,7 +1,7 @@
 #include "fluidSolver.h"
 
 
-void initializeFluidParticles(Particle* particles, int numberOfFluidParticles)
+void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, Vector2f offset)
 {
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
@@ -12,8 +12,8 @@ void initializeFluidParticles(Particle* particles, int numberOfFluidParticles)
         particles[i].velocity = Vector2f(0, 0);
         particles[i].acceleration = Vector2f(0, 0);
 
-        float temp1 = H * (i % 25 + 4) - 1.f;
-        float temp2 = H * (i / 25 + 5) - 1.f;
+        float temp1 = H * (i % 25 + offset.x) - 1.f;
+        float temp2 = H * (i / 25 + offset.y) - 1.f;
         particles[i].index = i;
         particles[i].position = Vector2f(temp1, temp2); // distribute the particles
     }
