@@ -6,6 +6,7 @@ uniform float threshold;
 uniform float radius;
 uniform vec2 particle_positions[600];
 uniform vec2 particle_velocities[600];
+uniform bool with_color;
 
 void main()
 {
@@ -40,37 +41,41 @@ void main()
 	if(metaball > threshold)
 	{
         vec3 c = vec3(0, 0, 1.0);
-		//vec3 color1;
-        //vec3 color2;
-        //float t = min(1.f, sqrt(velocity_x * velocity_x + velocity_y * velocity_y) / 2.5f);
-        //if (t < 0.11)
-        //{
-        //    t = (t - 0.0f) / 0.11f;
-        //    color1 = vec3(0, 0, 1.0);
-        //    color2 = vec3(0, 1.0, 1.0);
-        //}
-        //else if (t < 0.27)
-        //{
-        //    t = (t - 0.11f) / 0.16f;
-        //    color1 = vec3(0, 1.0, 1.0);
-        //    color2 = vec3(0, 1.0, 0);
-        //}
-        //else if (t < 0.36f)
-        //{
-        //    t = (t - 0.27f) / 0.09f;
-        //    color1 = vec3(0, 1.0, 0);
-        //    color2 = vec3(1.0, 1.0, 0);
-        //}
-        //else
-        //{
-        //    t = (t - 0.36f) / 0.64f;
-        //    color1 = vec3(1.0, 1.0, 0);
-        //    color2 = vec3(1.0, 0, 0);
-        //}
-        //
-        //c.x = min(color1.x + ((color2.x - color1.x) * t), 255.f);
-        //c.y = min(color1.y + ((color2.y - color1.y) * t), 255.f);
-        //c.z = min(color1.z + ((color2.z - color1.z) * t), 255.f);
+
+        if(with_color)
+        {
+		    vec3 color1;
+            vec3 color2;
+            float t = min(1.f, sqrt(velocity_x * velocity_x + velocity_y * velocity_y) / 4.f);
+            if (t < 0.11)
+            {
+                t = (t - 0.0f) / 0.11f;
+                color1 = vec3(0, 0, 1.0);
+                color2 = vec3(0, 1.0, 1.0);
+            }
+            else if (t < 0.27)
+            {
+                t = (t - 0.11f) / 0.16f;
+                color1 = vec3(0, 1.0, 1.0);
+                color2 = vec3(0, 1.0, 0);
+            }
+            else if (t < 0.36f)
+            {
+                t = (t - 0.27f) / 0.09f;
+                color1 = vec3(0, 1.0, 0);
+                color2 = vec3(1.0, 1.0, 0);
+            }
+            else
+            {
+                t = (t - 0.36f) / 0.64f;
+                color1 = vec3(1.0, 1.0, 0);
+                color2 = vec3(1.0, 0, 0);
+            }
+            
+            c.x = min(color1.x + ((color2.x - color1.x) * t), 255.f);
+            c.y = min(color1.y + ((color2.y - color1.y) * t), 255.f);
+            c.z = min(color1.z + ((color2.z - color1.z) * t), 255.f);
+        }
 
 		gl_FragColor = vec4(c, 1.0);
 	}
