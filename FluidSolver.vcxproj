@@ -27,6 +27,9 @@
     <ClInclude Include="fluidSolver.h" />
     <ClInclude Include="savePlot.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="frag_shader.glsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

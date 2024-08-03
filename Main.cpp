@@ -19,12 +19,34 @@ const int WINDOW_HEIGHT = 800;
 float myTime = 0;
 float deltaTime = 0.001;
 
+Shader shader;
+const std::string fragmentShader;
+
 int main()
 {
     /* setup window */
     RenderWindow window(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "FluidSolver", Style::Default);
     window.setFramerateLimit(60);   // prevent too much work for GPU
     window.setPosition(Vector2i(10, 10));
+
+    /* are shaders available? */
+    if (!sf::Shader::isAvailable())
+    {
+        cout << "shaders are not available...\n";
+    }
+
+    /* load shaders */
+    if (!shader.loadFromFile("frag_shader.glsl", sf::Shader::Fragment))
+    {
+        cout << "error...\n";
+    }
+
+    /* seperate texture for water smoothing/shader effects */
+    RenderTexture texture;
+    if (!texture.create(WINDOW_WIDTH, WINDOW_HEIGHT))
+    {
+        cout << "texture error";
+    }
 
     /* allocate memory for the particles and their shapes */
     Particle* particles = new Particle[NUMBER_OF_PARTICLES];
@@ -76,56 +98,73 @@ int main()
         }
 
         /* Draw */
+        texture.clear();
+        
+        texture.display();
+
         window.clear(); // don't draw on top of the previous frame
+
         for (size_t i = 0; i < NUMBER_OF_PARTICLES; i++)
         {
             drawingCircles[i].setRadius(particles[i].h / 2.f * WINDOW_WIDTH / 2.f);    // h is defined as the "diameter"
             drawingCircles[i].setPosition(Vector2f((particles[i].position.x + 1.f) * WINDOW_WIDTH / 2.f, WINDOW_HEIGHT - (particles[i].position.y + 1.f) * WINDOW_WIDTH / 2.f));   // the shapes to be drawn have to be updated independently, scale
-            if (i < NUMBER_OF_FLUID_PARTICLES)
-            {
-                drawingCircles[i].setFillColor(Color::Blue);
+            //if (i < NUMBER_OF_FLUID_PARTICLES)
+            //{
+            //    drawingCircles[i].setFillColor(Color::Blue);
+            //    Color color1;
+            //    Color color2;
+            //    Color c;
+            //    float t = min(1.f, sqrt(particles[i].velocity.x * particles[i].velocity.x + particles[i].velocity.y * particles[i].velocity.y) / 4.f);
+            //    if (t < 0.11)
+            //    {
+            //        t = (t - 0.0f) / 0.11f;
+            //        color1 = Color::Blue;
+            //        color2 = Color::Cyan;
+            //    }
+            //    else if (t < 0.27)
+            //    {
+            //        t = (t - 0.11f) / 0.16f;
+            //        color1 = Color::Cyan;
+            //        color2 = Color::Green;
+            //    }
+            //    else if (t < 0.36f)
+            //    {
+            //        t = (t - 0.27f) / 0.09f;
+            //        color1 = Color::Green;
+            //        color2 = Color::Yellow;
+            //    }
+            //    else
+            //    {
+            //        t = (t - 0.36f) / 0.64f;
+            //        color1 = Color::Yellow;
+            //        color2 = Color::Red;
+            //    }
 
-                Color color1;
-                Color color2;
-                Color c;
-                float t = min(1.f, sqrt(particles[i].velocity.x * particles[i].velocity.x + particles[i].velocity.y * particles[i].velocity.y) / 4.f);
-                if (t < 0.11)
-                {
-                    t = (t - 0.0f) / 0.11f;
-                    color1 = Color::Blue;
-                    color2 = Color::Cyan;
-                }
-                else if (t < 0.27)
-                {
-                    t = (t - 0.11f) / 0.16f;
-                    color1 = Color::Cyan;
-                    color2 = Color::Green;
-                }
-                else if (t < 0.36f)
-                {
-                    t = (t - 0.27f) / 0.09f;
-                    color1 = Color::Green;
-                    color2 = Color::Yellow;
-                }
-                else
-                {
-                    t = (t - 0.36f) / 0.64f;
-                    color1 = Color::Yellow;
-                    color2 = Color::Red;
-                }
+            //    c.r = min(color1.r + ((color2.r - color1.r) * t), 255.f);
+            //    c.g = min(color1.g + ((color2.g - color1.g) * t), 255.f);
+            //    c.b = min(color1.b + ((color2.b - color1.b) * t), 255.f);
 
-                c.r = min(color1.r + ((color2.r - color1.r) * t), 255.f);
-                c.g = min(color1.g + ((color2.g - color1.g) * t), 255.f);
-                c.b = min(color1.b + ((color2.b - color1.b) * t), 255.f);
-
-                drawingCircles[i].setFillColor(c);
-            }
-            if (i == 0) // one is red
-            {
-                drawingCircles[0].setFillColor(Color::Red);
-            }
+            //    drawingCircles[i].setFillColor(c);
+            //}
+            //if (i == 0) // one is red
+            //{
+            //    drawingCircles[0].setFillColor(Color::Red);
+            //}
             window.draw(drawingCircles[i]);
         }
+
+        Sprite sprite(texture.getTexture());
+        vector<Vector2f> p_pos;
+        vector<Vector2f> p_vel;
+        for (size_t i = 0; i < NUMBER_OF_FLUID_PARTICLES; i++) {
+            p_pos.push_back(drawingCircles[i].getPosition() + Vector2f(drawingCircles[i].getRadius(), drawingCircles[i].getRadius()));
+            p_vel.push_back(particles[i].velocity);
+        }
+        shader.setUniformArray("particle_positions", p_pos.data(), NUMBER_OF_FLUID_PARTICLES);
+        shader.setUniformArray("particle_velocities", p_vel.data(), NUMBER_OF_FLUID_PARTICLES);
+        shader.setUniform("threshold", 0.03f);
+        shader.setUniform("radius", 30.f);
+        window.draw(sprite, &shader);
 
         /* Display */
         window.display();
