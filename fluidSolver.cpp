@@ -1,4 +1,5 @@
 #include "fluidSolver.h"
+#include <iostream>
 
 
 void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, Vector2f offset)
@@ -8,7 +9,7 @@ void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, V
         particles[i].h = H;
         particles[i].density = DENSITY;
         particles[i].pressure = PRESSURE;
-        particles[i].mass = DENSITY * (H * H);
+        particles[i].mass = DENSITY * H * H;
         particles[i].velocity = Vector2f(0, 0);
         particles[i].acceleration = Vector2f(0, 0);
 
@@ -19,30 +20,70 @@ void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, V
     }
 }
 
-void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles, int numberOfParticles)
+void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles, int numberOfParticles, int sceneID)
 {
     for (size_t i = numberOfFluidParticles; i < numberOfParticles; i++)
     {
         float temp1 = 0.f;
         float temp2 = 0.f;
-        if (i - numberOfFluidParticles < 120)
+
+        if (sceneID == 0)
         {
-            // right
-            temp1 = H * ((i - numberOfFluidParticles) % 2 + 60) - 1.f;
-            temp2 = (H * ((i - numberOfFluidParticles) / 2 + 5) - 1.f);
+            if (i - numberOfFluidParticles < 120)
+            {
+                // right
+                temp1 = H * ((i - numberOfFluidParticles) % 2 + 60) - 1.f;
+                temp2 = (H * ((i - numberOfFluidParticles) / 2 + 5) - 1.f);
+            }
+            else if (i - numberOfFluidParticles < 240)
+            {
+                // left
+                temp1 = H * ((i - numberOfFluidParticles - 120) % 2 + 2) - 1.f;
+                temp2 = (H * ((i - numberOfFluidParticles - 120) / 2 + 5) - 1.f);
+            }
+            else
+            {
+                // bottom
+                temp1 = H * ((i - numberOfFluidParticles - 240) % 110 + 2) - 1.f;
+                temp2 = (H * ((i - numberOfFluidParticles - 240) / 110 + 3) - 1.f);
+            }
         }
-        else if (i - numberOfFluidParticles < 240)
+        else if (sceneID == 1)
         {
-            // left
-            temp1 = H * ((i - numberOfFluidParticles - 120) % 2 + 2) - 1.f;
-            temp2 = (H * ((i - numberOfFluidParticles - 120) / 2 + 5) - 1.f);
+            if (i - numberOfFluidParticles < 120)
+            {
+                // right
+                float x = H * ((i - numberOfFluidParticles) % 2 + 60) - 1.f;
+                float y = (H * ((i - numberOfFluidParticles) / 2 + 5) - 1.f);
+                
+                float angle = 290.f * PI / 180.f;
+                temp1 = x * cos(angle) - y * sin(angle);
+                temp2 = x * sin(angle) + y * cos(angle);
+
+                temp1 += 0.5;
+                temp2 += 0.7;
+            }
+            else if (i - numberOfFluidParticles < 240)
+            {
+                // left
+                float x = H * ((i - numberOfFluidParticles - 120) % 2 + 2) - 1.f;
+                float y = (H * ((i - numberOfFluidParticles - 120) / 2 + 5) - 1.f);
+
+                float angle = 50.f * PI / 180.f;
+                temp1 = x * cos(angle) - y * sin(angle);
+                temp2 = x * sin(angle) + y * cos(angle);
+
+                temp1 -= 0.2;
+                temp2 += 0.3;
+            }
+            else
+            {
+                // bottom
+                temp1 = H * ((i - numberOfFluidParticles - 240) % 110 + 2) - 1.f;
+                temp2 = (H * ((i - numberOfFluidParticles - 240) / 110 + 3) - 1.f);
+            };
         }
-        else
-        {
-            // bottom
-            temp1 = H * ((i - numberOfFluidParticles - 240) % 110 + 2) - 1.f;
-            temp2 = (H * ((i - numberOfFluidParticles - 240) / 110 + 3) - 1.f);
-        }
+
         particles[i].h = H;
         particles[i].pressure = PRESSURE;
         particles[i].velocity = Vector2f(0, 0);
@@ -50,8 +91,8 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
 
         particles[i].index = i;
         particles[i].position = Vector2f(temp1, temp2); // distribute the particles
-        particles[i].density = 1.7f;
-        particles[i].mass = 1.7f * H * H;
+        particles[i].density = DENSITY;
+        particles[i].mass = DENSITY * H * H;
     }
 }
 

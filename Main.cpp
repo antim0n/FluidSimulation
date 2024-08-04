@@ -13,8 +13,8 @@ const int NUMBER_OF_FLUID_PARTICLES = 600;
 const int NUMBER_OF_BOUNDARY_PARTICLES = 460;
 const int NUMBER_OF_PARTICLES = NUMBER_OF_FLUID_PARTICLES + NUMBER_OF_BOUNDARY_PARTICLES;
 
-const int WINDOW_WIDTH = 1400;
-const int WINDOW_HEIGHT = 800;
+const int WINDOW_WIDTH = 900;
+const int WINDOW_HEIGHT = 900;
 
 float myTime = 0;
 float deltaTime = 0.001;
@@ -26,6 +26,7 @@ const std::string fragmentShader;
 bool useShader = false;
 bool useColor = false;
 bool stopSimulation = false;
+int sceneID = 0;
 
 Font font;
 Text text;
@@ -62,7 +63,7 @@ int main()
         cout << "font not loaded";
     }
     text.setFont(font);
-    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | color: C | shader: S");
+    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E |color: C | shader: S");
     text.setCharacterSize(15);
     text.setFillColor(Color::Green);
 
@@ -79,7 +80,7 @@ int main()
     initializeFluidParticles(particles, NUMBER_OF_FLUID_PARTICLES, Vector2f(4, 5));
 
     /* initialize all boundary particles */
-    initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES);
+    initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, 0);
 
     /* one time plot */
     /*for (size_t i = 0; i < 101; i++)
@@ -113,6 +114,11 @@ int main()
                 else if (event.key.scancode == sf::Keyboard::Scan::X)
                 {
                     stopSimulation = !stopSimulation;
+                }
+                else if (event.key.scancode == sf::Keyboard::Scan::E)
+                {
+                    sceneID = (sceneID + 1) % 2;
+                    initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, sceneID);
                 }
                 break;
 

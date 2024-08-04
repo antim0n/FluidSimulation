@@ -7,12 +7,12 @@
 using namespace sf;
 using namespace std;
 
-const float H = 0.017f;
+const float H = 0.025f;
 const float DENSITY = 1.2f;
 const float PRESSURE = 0.f;
 
-const float STIFFNESS = 100.2f;
-const float VISCOSITY = 0.01f;
+const float STIFFNESS = 500.2f;
+const float VISCOSITY = 0.02f;
 const Vector2f GRAVITY = Vector2f(0.f, -9.81f);
 
 const double PI = 3.14159265358979323846;
@@ -37,7 +37,7 @@ struct Particle
 /* */
 void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, Vector2f offset);
 /* */
-void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles, int numberOfParticles);
+void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles, int numberOfParticles, int sceneID);
 /* */
 float cubicSpline(Vector2f positionA, Vector2f positionB);
 /* */
