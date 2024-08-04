@@ -139,7 +139,7 @@ int main()
         if (!stopSimulation)
         {
             /* Update (SPH Fluid Solver) */
-            neighbourSearchNN(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES);
+            neighborSearchNN(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, 2);
             computeDensityAndPressure(particles, NUMBER_OF_FLUID_PARTICLES);
             computeAccelerations(particles, NUMBER_OF_FLUID_PARTICLES);
             updatePositions(particles, NUMBER_OF_FLUID_PARTICLES);

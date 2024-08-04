@@ -128,12 +128,12 @@ Vector2f cubicSplineDerivative(Vector2f positionA, Vector2f positionB)
     float t2 = max(2 - d, 0.f);
 
     float v = alpha * (-3.f * t2 * t2 + 12.f * t1 * t1);
-    Vector2f w1 = Vector2f((temp.x / (d * H * H)) * v, (temp.y / (d * H * H)) * v); // whyy * H
+    Vector2f w1 = Vector2f((temp.x / (d * H * H)) * v, (temp.y / (d * H * H)) * v); // more accurate kernel wiht a scalar?
 
     return w1;
 }
 
-void neighbourSearchNN(Particle* particles, int numberOfFluidParticles, int numberOfParticles)
+void neighborSearchNN(Particle* particles, int numberOfFluidParticles, int numberOfParticles, float support)
 {
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
@@ -142,7 +142,7 @@ void neighbourSearchNN(Particle* particles, int numberOfFluidParticles, int numb
         {
             Vector2f d = particles[i].position - particles[j].position;
             float distance = sqrt(d.x * d.x + d.y * d.y);
-            if (distance < 2 * H)
+            if (distance < support * H)
             {
                 particles[i].neighbors.push_back(&particles[j]);
             }
@@ -158,7 +158,7 @@ void computeDensityAndPressure(Particle* particles, int numberOfFluidParticles)
         // sum over all neighbors
         for (size_t j = 0; j < particles[i].neighbors.size(); j++)
         {
-            temp += particles[i].neighbors[j]->mass * cubicSpline(particles[i].position, particles[i].neighbors[j]->position); // multiply with kernel
+            temp += particles[i].neighbors[j]->mass * cubicSpline(particles[i].position, particles[i].neighbors[j]->position);
         }
         particles[i].density = temp;
         particles[i].pressure = STIFFNESS * (max((temp / DENSITY) - 1.f, 0.f)); // somwhere max? // problem with dividing by 0?
@@ -170,7 +170,7 @@ void updatePositions(Particle* particles, int numberOfFluidParticles)
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
         particles[i].velocity += TIME_STEP * particles[i].acceleration;
-        particles[i].position += TIME_STEP * particles[i].velocity; // updated velocity
+        particles[i].position += TIME_STEP * particles[i].velocity; // updated velocity (semi-implicit euler)
     }
 }
 
@@ -188,12 +188,20 @@ Vector2f computeNonPAcc(Particle p)
     return 2.f * VISCOSITY * SPH + GRAVITY;
 }
 
-Vector2f computePAcc(Particle p)
+Vector2f computePAcc(Particle p, int numberOfFluidParticles)
 {
     Vector2f SPH = Vector2f(0.f, 0.f);
     for (size_t i = 0; i < p.neighbors.size(); i++)
     {
-        float val = p.pressure / (p.density * p.density) + p.neighbors[i]->pressure / (p.neighbors[i]->density * p.neighbors[i]->density);
+        float val = 0;
+        if (p.neighbors[i]->index > numberOfFluidParticles) // boundary handling
+        {
+            val = p.pressure / (p.density * p.density) + p.pressure / (p.density * p.density);
+        }
+        else
+        {
+            val = p.pressure / (p.density * p.density) + p.neighbors[i]->pressure / (p.neighbors[i]->density * p.neighbors[i]->density);
+        }
         Vector2f kernel = cubicSplineDerivative(p.position, p.neighbors[i]->position);
         SPH += p.neighbors[i]->mass * val * kernel;
     }
@@ -205,7 +213,7 @@ void computeAccelerations(Particle* particles, int numberOfFluidParticles)
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
         Vector2f aNonP = computeNonPAcc(particles[i]);
-        Vector2f aP = computePAcc(particles[i]);
+        Vector2f aP = computePAcc(particles[i], numberOfFluidParticles);
 
         particles[i].acceleration = aNonP + aP;
     }

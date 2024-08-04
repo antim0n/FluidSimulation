@@ -11,7 +11,7 @@ const float H = 0.025f;
 const float DENSITY = 1.2f;
 const float PRESSURE = 0.f;
 
-const float STIFFNESS = 500.2f;
+const float STIFFNESS = 300.2f;
 const float VISCOSITY = 0.02f;
 const Vector2f GRAVITY = Vector2f(0.f, -9.81f);
 
@@ -43,7 +43,7 @@ float cubicSpline(Vector2f positionA, Vector2f positionB);
 /* */
 Vector2f cubicSplineDerivative(Vector2f positionA, Vector2f positionB);
 /* */
-void neighbourSearchNN(Particle* particles, int numberOfFluidParticles, int numberOfParticles);
+void neighborSearchNN(Particle* particles, int numberOfFluidParticles, int numberOfParticles, float support);
 /* */
 void computeDensityAndPressure(Particle* particles, int numberOfFluidParticles);
 /* */
@@ -53,4 +53,4 @@ void computeAccelerations(Particle* particles, int numberOfFluidParticles);
 /* */
 Vector2f computeNonPAcc(Particle p);
 /* */
-Vector2f computePAcc(Particle p);
+Vector2f computePAcc(Particle p, int numberOfFluidParticles);
