@@ -38,6 +38,8 @@ int main()
     window.setFramerateLimit(60);   // prevent too much work for GPU
     window.setPosition(Vector2i(10, 10));
 
+    View view = window.getDefaultView();
+
     /* are shaders available? */
     if (!sf::Shader::isAvailable())
     {
@@ -117,7 +119,7 @@ int main()
                 }
                 else if (event.key.scancode == sf::Keyboard::Scan::E)
                 {
-                    sceneID = (sceneID + 1) % 2;
+                    sceneID = (sceneID + 1) % 3;
                     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, sceneID);
                 }
                 break;
@@ -129,6 +131,16 @@ int main()
                     initializeFluidParticles(particles, NUMBER_OF_FLUID_PARTICLES, Vector2f((float)mousePos.x / WINDOW_WIDTH * 2 / H, ((float)WINDOW_HEIGHT - (float)mousePos.y) / WINDOW_WIDTH * 2 / H));
                 }
                 break;
+                
+            case Event::MouseWheelScrolled:
+                if (event.mouseWheelScroll.delta >= 1)
+                {
+                    view.zoom(0.95f);
+                }
+                if (event.mouseWheelScroll.delta <= -1)
+                {
+                    view.zoom(1.05f);
+                }
 
             default:
                 break;
@@ -159,6 +171,7 @@ int main()
         texture.clear();
         texture.display();
 
+        window.setView(view);
         window.clear(); // don't draw on top of the previous frame
 
         for (size_t i = 0; i < NUMBER_OF_PARTICLES; i++)

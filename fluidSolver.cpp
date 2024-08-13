@@ -55,7 +55,7 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
                 // right
                 float x = H * ((i - numberOfFluidParticles) % 2 + 60) - 1.f;
                 float y = (H * ((i - numberOfFluidParticles) / 2 + 5) - 1.f);
-                
+
                 float angle = 290.f * PI / 180.f;
                 temp1 = x * cos(angle) - y * sin(angle);
                 temp2 = x * sin(angle) + y * cos(angle);
@@ -81,9 +81,8 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
                 // bottom
                 temp1 = H * ((i - numberOfFluidParticles - 240) % 110 + 2) - 1.f;
                 temp2 = (H * ((i - numberOfFluidParticles - 240) / 110 + 3) - 1.f);
-            };
+            }
         }
-
         particles[i].h = H;
         particles[i].pressure = PRESSURE;
         particles[i].velocity = Vector2f(0, 0);
@@ -155,10 +154,17 @@ void computeDensityAndPressure(Particle* particles, int numberOfFluidParticles)
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
         float temp = 0;
-        // sum over all neighbors
-        for (size_t j = 0; j < particles[i].neighbors.size(); j++)
+        if (particles[i].neighbors.size() == 1)
         {
-            temp += particles[i].neighbors[j]->mass * cubicSpline(particles[i].position, particles[i].neighbors[j]->position);
+            temp = DENSITY;
+        }
+        else
+        {
+            // sum over all neighbors
+            for (size_t j = 0; j < particles[i].neighbors.size(); j++)
+            {
+                temp += particles[i].neighbors[j]->mass * cubicSpline(particles[i].position, particles[i].neighbors[j]->position);
+            }
         }
         particles[i].density = temp;
         particles[i].pressure = STIFFNESS * (max((temp / DENSITY) - 1.f, 0.f)); // somwhere max? // problem with dividing by 0?
@@ -194,7 +200,7 @@ Vector2f computePAcc(Particle p, int numberOfFluidParticles)
     for (size_t i = 0; i < p.neighbors.size(); i++)
     {
         float val = 0;
-        if (p.neighbors[i]->index > numberOfFluidParticles) // boundary handling
+        if (p.neighbors[i]->index >= numberOfFluidParticles) // boundary handling (mirroring)
         {
             val = p.pressure / (p.density * p.density) + p.pressure / (p.density * p.density);
         }
