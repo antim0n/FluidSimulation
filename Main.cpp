@@ -27,9 +27,15 @@ bool useShader = false;
 bool useColor = false;
 bool stopSimulation = false;
 int sceneID = 0;
+bool showNeighbors = false;
 
 Font font;
 Text text;
+
+Vector2f particleCoordsToPixel(Vector2f position)
+{
+    return Vector2f((position.x + 1.f) * WINDOW_WIDTH / 2.f, WINDOW_HEIGHT - (position.y + 1.f) * WINDOW_WIDTH / 2.f);
+}
 
 int main()
 {
@@ -65,9 +71,23 @@ int main()
         cout << "font not loaded";
     }
     text.setFont(font);
-    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E |color: C | shader: S");
+    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E |color: C | shader: S | zoom: mouse wheel | neighbors : N");
     text.setCharacterSize(15);
     text.setFillColor(Color::Green);
+
+    Text* particleLables = new Text[NUMBER_OF_FLUID_PARTICLES];
+    for (size_t i = 0; i < NUMBER_OF_FLUID_PARTICLES; i++)
+    {
+        particleLables[i].setFont(font);
+        particleLables[i].setCharacterSize(9);
+        particleLables[i].setFillColor(Color::Green);
+    }
+    Text cflNumber;
+    float maxVelocity = 0;
+    cflNumber.setFont(font);
+    cflNumber.setCharacterSize(15);
+    cflNumber.setFillColor(Color::Green);
+    cflNumber.setPosition(Vector2f(0, 15));
 
     /* allocate memory for the particles and their shapes */
     Particle* particles = new Particle[NUMBER_OF_PARTICLES];
@@ -87,6 +107,7 @@ int main()
     /* one time plot */
     /*for (size_t i = 0; i < 101; i++)
     {
+        savePoint("densityError", - H - H + (i / 100.f) * 4 * H, | locale Dichte - Fluid Dichte | / Fluid Dichte, Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
         savePoint("cubicSpline", - H - H + (i / 100.f) * 4 * H, cubicSpline(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
         savePoint("x-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)).x);
         savePoint("y-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(H, 0), Vector2f(H, -H - H + (i / 100.f) * 4 * H)).y);
@@ -121,6 +142,10 @@ int main()
                 {
                     sceneID = (sceneID + 1) % 3;
                     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, sceneID);
+                }
+                else if (event.key.scancode == sf::Keyboard::Scan::N)
+                {
+                    showNeighbors = !showNeighbors;
                 }
                 break;
 
@@ -247,7 +272,23 @@ int main()
             window.draw(sprite, &shader);
         }
 
-        /* instructions */
+        /* text */
+        if (showNeighbors)
+        {
+            for (size_t i = 0; i < NUMBER_OF_FLUID_PARTICLES; i++)
+            {
+                particleLables[i].setString(to_string(particles[i].neighbors.size()));
+                particleLables[i].setPosition(particleCoordsToPixel(particles[i].position));
+                window.draw(particleLables[i]);
+            }
+        }
+
+        for (size_t i = 0; i < NUMBER_OF_FLUID_PARTICLES; i++)
+        {
+            maxVelocity = max(maxVelocity, sqrt(particles[i].velocity.x * particles[i].velocity.x + particles[i].velocity.y * particles[i].velocity.y));
+        }
+        cflNumber.setString("CFL: lambda >= " + to_string((TIME_STEP * maxVelocity) / H) + ", maxTimeStep: " + to_string(H / maxVelocity));
+        window.draw(cflNumber);
         window.draw(text);
 
         /* Display */
@@ -261,6 +302,7 @@ int main()
     /* deallocate memory */
     delete[] particles;
     delete[] drawingCircles;
+    delete[] particleLables;
 
     return EXIT_SUCCESS;
 }

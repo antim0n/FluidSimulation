@@ -16,7 +16,7 @@ const float VISCOSITY = 0.02f;
 const Vector2f GRAVITY = Vector2f(0.f, -9.81f);
 
 const double PI = 3.14159265358979323846;
-const float TIME_STEP = 0.0018f;
+const float TIME_STEP = 0.0012f;
 
 /* holds all important information needed at a particle */
 struct Particle
