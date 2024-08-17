@@ -6,7 +6,6 @@ void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, V
 {
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
-        particles[i].h = H;
         particles[i].density = REST_DENSITY;
         particles[i].pressure = PRESSURE;
         particles[i].mass = REST_DENSITY * H * H;
@@ -106,7 +105,6 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
 
             for (size_t i = 0; i < numberOfFluidParticles; i++)
             {
-                particles[i].h = H;
                 particles[i].density = REST_DENSITY;
                 particles[i].pressure = PRESSURE;
                 particles[i].mass = REST_DENSITY * H * H;
@@ -119,7 +117,6 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
                 particles[i].position = Vector2f(temp1, temp2); // distribute the particles
             }
         }
-        particles[i].h = H;
         particles[i].pressure = PRESSURE;
         particles[i].velocity = Vector2f(0, 0);
         particles[i].acceleration = Vector2f(0, 0);

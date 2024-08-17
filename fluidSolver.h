@@ -22,7 +22,6 @@ const float TIME_STEP = 0.0012f;
 struct Particle
 {
     int index;
-    float h; // on a scale from -1 to 1
     float density;  // in kg / m^3, 997 for water
     float pressure; // in N/m^2
     float mass;  // density * volume

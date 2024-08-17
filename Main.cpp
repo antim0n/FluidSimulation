@@ -105,13 +105,13 @@ int main()
     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, 0);
 
     /* one time plot */
-    /*for (size_t i = 0; i < 101; i++)
+    for (size_t i = 0; i < 101; i++)
     {
-        savePoint("densityError", - H - H + (i / 100.f) * 4 * H, | locale Dichte - Fluid Dichte | / Fluid Dichte, Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
+        //savePoint("densityError", - H - H + (i / 100.f) * 4 * H, | locale Dichte - Fluid Dichte | / Fluid Dichte, Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
         savePoint("cubicSpline", - H - H + (i / 100.f) * 4 * H, cubicSpline(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
         savePoint("x-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)).x);
         savePoint("y-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(H, 0), Vector2f(H, -H - H + (i / 100.f) * 4 * H)).y);
-    }*/
+    }
 
     /* simulation and rendering loop */
     while (window.isOpen())
@@ -201,7 +201,7 @@ int main()
 
         for (size_t i = 0; i < NUMBER_OF_PARTICLES; i++)
         {
-            drawingCircles[i].setRadius(particles[i].h / 2.f * WINDOW_WIDTH / 2.f);    // h is defined as the "diameter"
+            drawingCircles[i].setRadius(H / 2.f * WINDOW_WIDTH / 2.f);    // h is defined as the "diameter"
             drawingCircles[i].setPosition(Vector2f((particles[i].position.x + 1.f) * WINDOW_WIDTH / 2.f, WINDOW_HEIGHT - (particles[i].position.y + 1.f) * WINDOW_WIDTH / 2.f));   // the shapes to be drawn have to be updated independently, scale
             if (i < NUMBER_OF_FLUID_PARTICLES)
             {
@@ -297,7 +297,7 @@ int main()
         myTime += deltaTime;
     }
 
-    // writeToFile();
+    writeToFile();
 
     /* deallocate memory */
     delete[] particles;

@@ -1,12 +1,19 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+
+path = os.path.abspath(__file__)
+dir = os.path.dirname(path)
+os.chdir(dir)
 
 lines = []
+
+graphs_per_column = 2
 
 with open("graphs.txt", "r") as f:
     lines = [line.strip().split(" ") for line in f]
 
-figure, axis = plt.subplots(4, 2, figsize=(14, 8))
+figure, axis = plt.subplots(graphs_per_column, 2, figsize=(14, 8))
 
 number = 0
 for i in lines:
@@ -18,7 +25,7 @@ for i in lines:
     ypoints = np.array(y)
     markers = [0]
 
-    a = axis[number % 4, number // 4]
+    a = axis[number % graphs_per_column, number // graphs_per_column]
 
     a.plot(xpoints, ypoints, '-gD', markevery=markers)
     a.set_title(name)
