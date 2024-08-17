@@ -8,7 +8,7 @@ using namespace sf;
 using namespace std;
 
 const float H = 0.025f;
-const float DENSITY = 1.2f;
+const float REST_DENSITY = 1.2f;
 const float PRESSURE = 0.f;
 
 const float STIFFNESS = 300.2f;

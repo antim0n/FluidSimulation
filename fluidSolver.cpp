@@ -7,9 +7,9 @@ void initializeFluidParticles(Particle* particles, int numberOfFluidParticles, V
     for (size_t i = 0; i < numberOfFluidParticles; i++)
     {
         particles[i].h = H;
-        particles[i].density = DENSITY;
+        particles[i].density = REST_DENSITY;
         particles[i].pressure = PRESSURE;
-        particles[i].mass = DENSITY * H * H;
+        particles[i].mass = REST_DENSITY * H * H;
         particles[i].velocity = Vector2f(0, 0);
         particles[i].acceleration = Vector2f(0, 0);
 
@@ -107,9 +107,9 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
             for (size_t i = 0; i < numberOfFluidParticles; i++)
             {
                 particles[i].h = H;
-                particles[i].density = DENSITY;
+                particles[i].density = REST_DENSITY;
                 particles[i].pressure = PRESSURE;
-                particles[i].mass = DENSITY * H * H;
+                particles[i].mass = REST_DENSITY * H * H;
                 particles[i].velocity = Vector2f(0, 0);
                 particles[i].acceleration = Vector2f(0, 0);
 
@@ -126,8 +126,8 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
 
         particles[i].index = i;
         particles[i].position = Vector2f(temp1, temp2); // distribute the particles
-        particles[i].density = DENSITY;
-        particles[i].mass = DENSITY * H * H;
+        particles[i].density = REST_DENSITY;
+        particles[i].mass = REST_DENSITY * H * H;
     }
 }
 
@@ -192,7 +192,7 @@ void computeDensityAndPressure(Particle* particles, int numberOfFluidParticles)
         float temp = 0;
         if (particles[i].neighbors.size() == 1)
         {
-            temp = DENSITY;
+            temp = REST_DENSITY;
         }
         else
         {
@@ -203,7 +203,7 @@ void computeDensityAndPressure(Particle* particles, int numberOfFluidParticles)
             }
         }
         particles[i].density = temp;
-        particles[i].pressure = STIFFNESS * (max((temp / DENSITY) - 1.f, 0.f)); // somwhere max? // problem with dividing by 0?
+        particles[i].pressure = STIFFNESS * (max((temp / REST_DENSITY) - 1.f, 0.f)); // somwhere max? // problem with dividing by 0?
     }
 }
 

@@ -53,7 +53,7 @@ TEST(SimpleTest, TestDensityAndPressureComputation)
         p[8].mass * cubicSpline(p[0].position, p[8].position) + p[0].mass * cubicSpline(p[0].position, p[0].position);
     EXPECT_FLOAT_EQ(p[0].density, sum);
     // EXPECT_FLOAT_EQ(p[0].density, DENSITY); // not sure if this is supposed to be true == 1.201034199
-    EXPECT_FLOAT_EQ(p[0].pressure, STIFFNESS * (p[0].density / DENSITY - 1.f));
+    EXPECT_FLOAT_EQ(p[0].pressure, STIFFNESS * (p[0].density / REST_DENSITY - 1.f));
 
     delete[] p;
 }

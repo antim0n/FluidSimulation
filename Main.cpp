@@ -71,7 +71,7 @@ int main()
         cout << "font not loaded";
     }
     text.setFont(font);
-    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E |color: C | shader: S | zoom: mouse wheel | neighbors : N");
+    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E | color: C | shader: S | zoom: mouse wheel | neighbors : N");
     text.setCharacterSize(15);
     text.setFillColor(Color::Green);
 
@@ -297,7 +297,7 @@ int main()
         myTime += deltaTime;
     }
 
-    writeToFile();
+    // writeToFile();
 
     /* deallocate memory */
     delete[] particles;
