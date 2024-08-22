@@ -119,15 +119,28 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
         }
         else if (sceneID == 3)
         {
-            if (i - numberOfFluidParticles < (numberOfParticles - numberOfFluidParticles) / 2)
+            int angle = i - numberOfFluidParticles;
+            temp1 = cos((angle * PI / 180.f) * 2.f) * (0.74f + H * (angle / 180));
+            temp2 = sin((angle * PI / 180.f) * 2.f) * (0.74f + H * (angle / 180));
+        }
+        else if (sceneID == 4)
+        {
+            if (i - numberOfFluidParticles < 178)
             {
-                temp1 = cos(i) * 30.f * H;
-                temp2 = sin(i) * 30.f * H;
+                int angle = i - numberOfFluidParticles + 120;
+                temp1 = cos((angle * PI / 180.f) * 2.f) * (0.74f);
+                temp2 = sin((angle * PI / 180.f) * 2.f) * (0.74f);
+            }
+            else if (i - numberOfFluidParticles < 356)
+            {
+                int angle = i - numberOfFluidParticles - 178 + 120;
+                temp1 = cos((angle * PI / 180.f) * 2.f) * (0.74f + H);
+                temp2 = sin((angle * PI / 180.f) * 2.f) * (0.74f + H);
             }
             else
             {
-                temp1 = cos(i) * 31.f * H;
-                temp2 = sin(i) * 31.f * H;
+                temp1 = 2.f;
+                temp2 = 2.f;
             }
         }
         particles[i].pressure = PRESSURE;

@@ -140,7 +140,7 @@ int main()
                 }
                 else if (event.key.scancode == sf::Keyboard::Scan::E)
                 {
-                    sceneID = (sceneID + 1) % 4;
+                    sceneID = (sceneID + 1) % 5;
                     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, sceneID);
                 }
                 else if (event.key.scancode == sf::Keyboard::Scan::N)
