@@ -26,6 +26,7 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
         float temp1 = 0.f;
         float temp2 = 0.f;
 
+        // basic
         if (sceneID == 0)
         {
             if (i - numberOfFluidParticles < 120)
@@ -47,6 +48,7 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
                 temp2 = (H * ((i - numberOfFluidParticles - 240) / 110 + 3) - 1.f);
             }
         }
+        // sloping
         else if (sceneID == 1)
         {
             if (i - numberOfFluidParticles < 120)
@@ -82,6 +84,7 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
                 temp2 = (H * ((i - numberOfFluidParticles - 240) / 110 + 3) - 1.f);
             }
         }
+        // column
         else if (sceneID == 2)
         {
             if (i - numberOfFluidParticles < 120)
@@ -117,12 +120,14 @@ void initializeBoundaryParticles(Particle* particles, int numberOfFluidParticles
                 particles[i].position = Vector2f(temp1, temp2); // distribute the FLUID particles
             }
         }
+        // circle
         else if (sceneID == 3)
         {
             int angle = i - numberOfFluidParticles;
             temp1 = cos((angle * PI / 180.f) * 2.f) * (0.74f + H * (angle / 180));
             temp2 = sin((angle * PI / 180.f) * 2.f) * (0.74f + H * (angle / 180));
         }
+        // circle with hole
         else if (sceneID == 4)
         {
             if (i - numberOfFluidParticles < 178)
@@ -246,7 +251,7 @@ Vector2f computeNonPAcc(Particle p)
     {
         Vector2f velD = p.velocity - p.neighbors[i]->velocity;
         Vector2f posD = p.position - p.neighbors[i]->position;
-        float val = (velD.x * posD.x + velD.y * posD.y) / (posD.x * posD.x + posD.y * posD.y + 0.01 * H * H);
+        float val = (velD.x * posD.x + velD.y * posD.y) / (posD.x * posD.x + posD.y * posD.y + 0.01f * H * H);
         Vector2f kernel = cubicSplineDerivative(p.position, p.neighbors[i]->position);
         SPH += (p.neighbors[i]->mass / p.neighbors[i]->density) * val * kernel;
     }

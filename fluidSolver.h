@@ -11,12 +11,12 @@ const float H = 0.025f;
 const float REST_DENSITY = 1.2f;
 const float PRESSURE = 0.f;
 
-const float STIFFNESS = 300.2f;
-const float VISCOSITY = 0.02f;
+const float STIFFNESS = 250.2f; //
+const float VISCOSITY = 0.015f; //
 const Vector2f GRAVITY = Vector2f(0.f, -9.81f);
 
 const double PI = 3.14159265358979323846;
-const float TIME_STEP = 0.0012f;
+const float TIME_STEP = 0.0012f; //
 
 /* holds all important information needed at a particle */
 struct Particle
