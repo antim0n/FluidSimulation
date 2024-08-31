@@ -9,7 +9,7 @@
 using namespace sf;
 using namespace std;
 
-const int NUMBER_OF_FLUID_PARTICLES = 600;
+const int NUMBER_OF_FLUID_PARTICLES = 396;
 const int NUMBER_OF_BOUNDARY_PARTICLES = 460;
 const int NUMBER_OF_PARTICLES = NUMBER_OF_FLUID_PARTICLES + NUMBER_OF_BOUNDARY_PARTICLES;
 
@@ -28,6 +28,7 @@ bool useColor = false;
 bool stopSimulation = false;
 int sceneID = 0;
 bool showNeighbors = false;
+bool drawGraphs = false;
 
 Font font;
 Text text;
@@ -71,7 +72,7 @@ int main()
         cout << "font not loaded";
     }
     text.setFont(font);
-    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E | color: C | shader: S | zoom: mouse wheel | neighbors : N");
+    text.setString("SHORTCUTS   >>   stop: X | restart: left mouse | change scene: E | color: C | shader: S | zoom: mouse wheel | neighbors : N | graph : D");
     text.setCharacterSize(15);
     text.setFillColor(Color::Green);
 
@@ -105,13 +106,13 @@ int main()
     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, 0);
 
     /* one time plot */
-    for (size_t i = 0; i < 101; i++)
-    {
-        //savePoint("densityError", - H - H + (i / 100.f) * 4 * H, | locale Dichte - Fluid Dichte | / Fluid Dichte, Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
-        savePoint("cubicSpline", - H - H + (i / 100.f) * 4 * H, cubicSpline(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
-        savePoint("x-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)).x);
-        savePoint("y-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(H, 0), Vector2f(H, -H - H + (i / 100.f) * 4 * H)).y);
-    }
+    //for (size_t i = 0; i < 101; i++)
+    //{
+    //    //savePoint("densityError", - H - H + (i / 100.f) * 4 * H, | locale Dichte - Fluid Dichte | / Fluid Dichte, Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
+    //    savePoint("cubicSpline", - H - H + (i / 100.f) * 4 * H, cubicSpline(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)));
+    //    savePoint("x-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(0, H), Vector2f(-H - H + (i / 100.f) * 4 * H, H)).x);
+    //    savePoint("y-cubicSplineDerivative", -H - H + (i / 100.f) * 4 * H, cubicSplineDerivative(Vector2f(H, 0), Vector2f(H, -H - H + (i / 100.f) * 4 * H)).y);
+    //}
 
     /* simulation and rendering loop */
     while (window.isOpen())
@@ -146,6 +147,11 @@ int main()
                 else if (event.key.scancode == sf::Keyboard::Scan::N)
                 {
                     showNeighbors = !showNeighbors;
+                }
+                else if (event.key.scancode == sf::Keyboard::Scan::D)
+                {
+                    drawGraphs = !drawGraphs;
+                    myTime = 0;
                 }
                 break;
 
@@ -183,14 +189,21 @@ int main()
         }
         
         /* plot over time */
-        //if (myTime < 1) // 1000 points per graph
-        //{
-        //    savePoint("y-velocity", myTime, particles[0].velocity.y);
-        //    savePoint("y-acceleration", myTime, particles[0].acceleration.y);
-        //    savePoint("density", myTime, particles[0].density);
-        //    savePoint("pressure", myTime, particles[0].pressure);
-        //    savePoint("position", (particles[0].position.x + 1.f) * WINDOW_WIDTH / 2.f, (particles[0].position.y + 1.f) * WINDOW_WIDTH / 2.f);
-        //}
+        if (drawGraphs)
+        {
+            float d = 0.f;
+            for (size_t i = 0; i < NUMBER_OF_FLUID_PARTICLES; i++)
+            {
+                d += particles[i].density;
+            }
+            d = d / NUMBER_OF_FLUID_PARTICLES;
+            savePoint("density_error", myTime, abs(d - REST_DENSITY) / REST_DENSITY);
+            // savePoint("y-velocity", myTime, particles[0].velocity.y);
+            // savePoint("y-acceleration", myTime, particles[0].acceleration.y);
+            // savePoint("density", myTime, particles[0].density);
+            // savePoint("pressure", myTime, particles[0].pressure);
+            // savePoint("position", (particles[0].position.x + 1.f) * WINDOW_WIDTH / 2.f, (particles[0].position.y + 1.f) * WINDOW_WIDTH / 2.f);
+        }
 
         /* Draw */
         texture.clear();
@@ -248,10 +261,6 @@ int main()
                     drawingCircles[i].setFillColor(c);
                 }
             }
-            //if (i == 0) // one is red
-            //{
-            //    drawingCircles[0].setFillColor(Color::Red);
-            //}
             window.draw(drawingCircles[i]);
         }
 
@@ -294,7 +303,10 @@ int main()
         /* Display */
         window.display();
 
-        myTime += deltaTime;
+        if (drawGraphs)
+        {
+            myTime += deltaTime;
+        }
     }
 
     writeToFile();
