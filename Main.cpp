@@ -142,6 +142,11 @@ int main()
                 else if (event.key.scancode == sf::Keyboard::Scan::E)
                 {
                     sceneID = (sceneID + 1) % 5;
+                    /*if (sceneID == 2)
+                    {
+                        drawGraphs = !drawGraphs;
+                        myTime = 0;
+                    }*/
                     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, sceneID);
                 }
                 else if (event.key.scancode == sf::Keyboard::Scan::N)
@@ -189,7 +194,7 @@ int main()
         }
         
         /* plot over time */
-        if (drawGraphs)
+        if (drawGraphs && myTime < 1)
         {
             float d = 0.f;
             for (size_t i = 0; i < NUMBER_OF_FLUID_PARTICLES; i++)
@@ -198,9 +203,9 @@ int main()
             }
             d = d / NUMBER_OF_FLUID_PARTICLES;
             savePoint("density_error", myTime, abs(d - REST_DENSITY) / REST_DENSITY);
+            // savePoint("average_density", myTime, d);
             // savePoint("y-velocity", myTime, particles[0].velocity.y);
             // savePoint("y-acceleration", myTime, particles[0].acceleration.y);
-            // savePoint("density", myTime, particles[0].density);
             // savePoint("pressure", myTime, particles[0].pressure);
             // savePoint("position", (particles[0].position.x + 1.f) * WINDOW_WIDTH / 2.f, (particles[0].position.y + 1.f) * WINDOW_WIDTH / 2.f);
         }
