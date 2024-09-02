@@ -9,7 +9,7 @@
 using namespace sf;
 using namespace std;
 
-const int NUMBER_OF_FLUID_PARTICLES = 396;
+const int NUMBER_OF_FLUID_PARTICLES = 600;
 const int NUMBER_OF_BOUNDARY_PARTICLES = 460;
 const int NUMBER_OF_PARTICLES = NUMBER_OF_FLUID_PARTICLES + NUMBER_OF_BOUNDARY_PARTICLES;
 
@@ -147,6 +147,7 @@ int main()
                         drawGraphs = !drawGraphs;
                         myTime = 0;
                     }*/
+                    maxVelocity = 0;
                     initializeBoundaryParticles(particles, NUMBER_OF_FLUID_PARTICLES, NUMBER_OF_PARTICLES, sceneID);
                 }
                 else if (event.key.scancode == sf::Keyboard::Scan::N)
@@ -165,6 +166,7 @@ int main()
                 {
                     Vector2i mousePos = Mouse::getPosition(window);
                     initializeFluidParticles(particles, NUMBER_OF_FLUID_PARTICLES, Vector2f((float)mousePos.x / WINDOW_WIDTH * 2 / H, ((float)WINDOW_HEIGHT - (float)mousePos.y) / WINDOW_WIDTH * 2 / H));
+                    maxVelocity = 0;
                 }
                 break;
                 
