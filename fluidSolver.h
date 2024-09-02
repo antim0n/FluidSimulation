@@ -31,6 +31,7 @@ struct Particle
     vector<Particle*> neighbors;    // pointers to all current neighbors
 };
 
+
 // function declarations
 
 /* */

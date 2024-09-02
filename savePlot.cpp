@@ -1,6 +1,5 @@
 #include "savePlot.h"
 
-
 map<string, vector<float>> graphs;
 
 

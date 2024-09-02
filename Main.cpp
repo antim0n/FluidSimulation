@@ -38,6 +38,7 @@ Vector2f particleCoordsToPixel(Vector2f position)
     return Vector2f((position.x + 1.f) * WINDOW_WIDTH / 2.f, WINDOW_HEIGHT - (position.y + 1.f) * WINDOW_WIDTH / 2.f);
 }
 
+
 int main()
 {
     /* setup window */

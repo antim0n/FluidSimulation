@@ -374,7 +374,7 @@ TEST(ImportantTest, TestCubicSplineDerivative)
     float matrix10 = diff1.y * kernel1.x + diff2.y * kernel2.x + diff3.y * kernel3.x + diff4.y * kernel4.x + diff5.y * kernel5.x + diff6.y * kernel6.x + diff7.y * kernel7.x + diff8.y * kernel8.x + diff9.y * kernel9.x;
     float matrix11 = diff1.y * kernel1.y + diff2.y * kernel2.y + diff3.y * kernel3.y + diff4.y * kernel4.y + diff5.y * kernel5.y + diff6.y * kernel6.y + diff7.y * kernel7.y + diff8.y * kernel8.y + diff9.y * kernel9.y;
 
-    EXPECT_FLOAT_EQ(matrix00, -1.f / (H * H)); // should be correct, difference comes from small kernel errors?
+    EXPECT_FLOAT_EQ(matrix00, -1.f / (H * H)); // should be correct, difference comes from small kernel errors
     EXPECT_FLOAT_EQ(matrix01, 0);
     EXPECT_FLOAT_EQ(matrix10, 0);
     EXPECT_FLOAT_EQ(matrix11, -1.f / (H * H));

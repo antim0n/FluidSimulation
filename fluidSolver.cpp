@@ -231,7 +231,7 @@ void computeDensityAndPressure(Particle* particles, int numberOfFluidParticles)
             }
         }
         particles[i].density = temp;
-        particles[i].pressure = STIFFNESS * (max((temp / REST_DENSITY) - 1.f, 0.f)); // somwhere max? // problem with dividing by 0?
+        particles[i].pressure = STIFFNESS * (max((temp / REST_DENSITY) - 1.f, 0.f)); // problem with dividing by 0
     }
 }
 
